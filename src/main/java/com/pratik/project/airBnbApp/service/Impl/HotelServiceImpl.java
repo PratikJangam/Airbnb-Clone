@@ -1,6 +1,7 @@
 package com.pratik.project.airBnbApp.service.Impl;
 
 import com.pratik.project.airBnbApp.dto.HotelDto;
+import com.pratik.project.airBnbApp.dto.HotelInfoDto;
 import com.pratik.project.airBnbApp.dto.RoomDto;
 import com.pratik.project.airBnbApp.entity.Hotel;
 import com.pratik.project.airBnbApp.entity.Room;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -83,5 +85,18 @@ public class HotelServiceImpl implements HotelService {
         }
 
         hotelRepository.save(hotel);
+    }
+
+    @Override
+    public HotelInfoDto getHotelInfoById(Long hotelId) {
+        Hotel hotel = hotelRepository
+                .findById(hotelId)
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with Id: "+ hotelId));
+        List<RoomDto> rooms = hotel.getRooms()
+                .stream()
+                .map((element) -> modelMapper.map(element, RoomDto.class))
+                .toList();
+
+        return new HotelInfoDto(modelMapper.map(hotel, HotelDto.class), rooms);
     }
 }
