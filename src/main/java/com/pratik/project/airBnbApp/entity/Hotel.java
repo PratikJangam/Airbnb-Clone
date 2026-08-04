@@ -37,11 +37,14 @@ public class Hotel {
     private LocalDateTime updatedAt;
 
     @Embedded
-    private HotelContactInfo hotelContactInfo;
+    private HotelContactInfo contactInfo;
 
     @Column(nullable = false)
     private Boolean active;
 
     @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
     private List<Room> rooms;
+
+    @ManyToOne
+    private User owner;
 }
